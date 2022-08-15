@@ -116,16 +116,17 @@ func ParseFlags() (string, error) {
 
 	// Set up a CLI flag called "-config" to allow users
 	// to supply the configuration file
-	flag.StringVar(&configPath, "config", "config.yaml", "path to config file")
+	flag.StringVar(&configPath, "config", "config.yaml", "/home/dung/GolandProjects/backup-controller/examples/config.yaml")
 
 	// Actually parse the flags
 	flag.Parse()
 
+	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>", configPath)
 	// Validate the path first
-	if err := ValidateConfigPath(configPath); err != nil {
+	if err := ValidateConfigPath("examples/config.yaml"); err != nil {
 		return "", err
 	}
 
 	// Return the configuration path
-	return configPath, nil
+	return "examples/config.yaml", nil
 }

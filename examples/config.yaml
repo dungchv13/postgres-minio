@@ -8,55 +8,55 @@ spec:
 
   # S3 storages configuration
   storages:
-    - name: s3
+    - name: minio
       s3:
-        endpoint: minio:9000
+        endpoint: 172.21.5.245:30574
         region: us-west-1
-        bucket: dbbackups
-        access-key: minio
-        client-secret: miniostorage
-    - name: s3-2
-      s3:
-        endpoint: minio:9000
-        region: us-east-1
-        bucket: dbbackups
-        access-key: minio
-        client-secret: miniostorage
-    - name: s3-3
-      s3:
-        endpoint: minio:9000
-        region: us-east-1
-        bucket: dbbackups
-        access-key: minio
-        client-secret: miniostorage
+        bucket: db-backup2
+        access-key: iot
+        client-secret: iot@2022
+#    - name: s3-2
+#      s3:
+#        endpoint: minio:9000
+#        region: us-east-1
+#        bucket: dbbackups
+#        access-key: minio
+#        client-secret: miniostorage
+#    - name: s3-3
+#      s3:
+#        endpoint: minio:9000
+#        region: us-east-1
+#        bucket: dbbackups
+#        access-key: minio
+#        client-secret: miniostorage
 
   # Databases configuration
   databases:
-    - name: pg
+    - name: test
       type: postgres
-      host: postgres
+      host: localhost
       port: 5432
-      db: postgres
+      db: users
       user: postgres
-      password: root
+      password: 1
       options:
         - --insert
-    - name: pg-1
-      type: postgres
-      host: postgres
-      port: 5432
-      db: postgres
-      user: postgres
-      password: root
-    - name: pg-2
-      type: postgres
-      host: postgres
-      port: 5432
-      db: postgres
-      user: postgres
-      password: root
-      options:
-        - --insert
+#    - name: pg-1
+#      type: postgres
+#      host: postgres
+#      port: 5432
+#      db: postgres
+#      user: postgres
+#      password: root
+#    - name: pg-2
+#      type: postgres
+#      host: postgres
+#      port: 5432
+#      db: postgres
+#      user: postgres
+#      password: root
+#      options:
+#        - --insert
 
   # Cron schedules
   backups:
@@ -65,18 +65,18 @@ spec:
       schedule: "* * * * *"
       # Databases to backup
       databases:
-        - name: pg
+        - name: test
       storage:
-        name: s3
-    - name: pg-backup-task-2
-      schedule: "* * * * *"
-      databases:
-        - name: pg-1
-      storage:
-        name: s3
-    - name: pg-backup-task-3
-      schedule: "*/3 * * * *"
-      databases:
-        - name: pg-2
-      storage:
-        name: s3
+        name: minio
+#    - name: pg-backup-task-2
+#      schedule: "* * * * *"
+#      databases:
+#        - name: pg-1
+#      storage:
+#        name: s3
+#    - name: pg-backup-task-3
+#      schedule: "*/3 * * * *"
+#      databases:
+#        - name: pg-2
+#      storage:
+#        name: s3

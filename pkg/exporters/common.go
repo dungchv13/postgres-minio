@@ -1,6 +1,7 @@
 package exporters
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -54,15 +55,20 @@ type ExportResult struct {
 func (x *ExportResult) To(directory string, store Storer) *Error {
 	if store == nil {
 		out, err := exec.Command("mv", x.Path, directory+x.Filename()).Output()
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>1",err)
 		return makeErr(err, string(out))
 	}
 
 	storeErr := store.Store(x, directory)
 	if storeErr != nil {
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>2",storeErr)
 		return storeErr
 	}
 
 	err := os.Remove(x.Path)
+	if err != nil {
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>3",err)
+	}
 	return makeErr(err, "")
 }
 

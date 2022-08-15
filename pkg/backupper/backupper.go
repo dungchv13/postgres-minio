@@ -101,6 +101,7 @@ func (b Backupper) BackupDatabase(d config.Database, s config.Storage) error {
 		}
 		err := db.Export().To(d.Name+d.DB+"_backups/", &storage)
 		if err != nil {
+			fmt.Println(">>>>>>>>>>>>>>>>>>>>",err)
 			return err
 		}
 		return nil

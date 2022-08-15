@@ -3,6 +3,7 @@ package exporters
 import (
 	"bufio"
 	"context"
+	"fmt"
 	"os"
 
 	"github.com/minio/minio-go/v7"
@@ -22,12 +23,15 @@ type S3 struct {
 
 // Store puts an `ExportResult` struct to an S3 bucket within the specified directory
 func (x *S3) Store(result *ExportResult, directory string) *Error {
+	fmt.Printf("\n>>>>>>>>>>>>>>>>>>>>>>s3: %+v",x )
 	if result.Error != nil {
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>4",result.Error)
 		return result.Error
 	}
 
 	file, err := os.Open(result.Path)
 	if err != nil {
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>5",err)
 		return makeErr(err, "")
 	}
 	defer file.Close()
@@ -35,6 +39,7 @@ func (x *S3) Store(result *ExportResult, directory string) *Error {
 	buffy := bufio.NewReader(file)
 	stat, err := file.Stat()
 	if err != nil {
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>6",err)
 		return makeErr(err, "")
 	}
 
@@ -46,6 +51,7 @@ func (x *S3) Store(result *ExportResult, directory string) *Error {
 		Secure: x.UseSSL,
 	})
 	if err != nil {
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>7",err)
 		return makeErr(err, "")
 	}
 	err = minioClient.MakeBucket(
@@ -56,10 +62,13 @@ func (x *S3) Store(result *ExportResult, directory string) *Error {
 
 	if err != nil {
 		// Check to see if we already own this bucket (which happens if you run this twice)
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>8",err)
 		exists, errBucketExists := minioClient.BucketExists(ctx, x.Bucket)
 		if errBucketExists == nil && exists {
 			logrus.Printf("We already own %s\n", x.Bucket)
 		} else {
+			fmt.Printf("\n>>>>>>>>>>>>>>>>>>>>>>exists: %+v",exists )
+			fmt.Println(">>>>>>>>>>>>>>>>>>>>errBucketExists",errBucketExists)
 			return makeErr(err, "")
 		}
 	} else {
@@ -73,6 +82,7 @@ func (x *S3) Store(result *ExportResult, directory string) *Error {
 		size,
 		minio.PutObjectOptions{ContentType: result.MIME})
 	if err != nil {
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>10",err)
 		return makeErr(err, "")
 	}
 	logrus.Infof("Successfully uploaded %s of size %d\n", directory+result.Filename(), info.Size)
